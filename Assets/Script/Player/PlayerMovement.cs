@@ -9,10 +9,13 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement Settings")]
     [SerializeField]private float moveSpeed = 5f;
-    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float jumpForce = 10f;
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundCheckRadius = 0.2f;
+    [SerializeField] private float groundCheckRadius = 0.1f;
     [SerializeField] private LayerMask groundLayer;
+
+    public int maxJumps = 2;        
+    private int currentJumpCount = 0;
 
     [SerializeField]private Transform MyTransforms;
 
@@ -46,19 +49,23 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 scale = MyTransforms.localScale;
-        scale.x = moveInput.x > 0 ? 1 : moveInput.x < 0 ? -1 : scale.x;
+        scale.x = moveInput.x > 0 ? 0.8f : moveInput.x < 0 ? -0.8f : scale.x;
         MyTransforms.localScale = scale;
 
         // Horizontal movement
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
 
         // Jump if pressed and grounded
-        if (jumpPressed && IsGrounded())
+        if (jumpPressed && currentJumpCount < maxJumps)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            currentJumpCount++;
+            jumpPressed = false; // reset jump input
         }
-
-        jumpPressed = false; // Reset after use
+        if (IsGrounded())
+{
+    currentJumpCount = 0;
+}
     }
 
     bool IsGrounded()
