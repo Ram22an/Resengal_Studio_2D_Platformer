@@ -8,11 +8,13 @@ public class PlayerMovement : MonoBehaviour
     private bool jumpPressed;
 
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
-    public float jumpForce = 5f;
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
-    public LayerMask groundLayer;
+    [SerializeField]private float moveSpeed = 5f;
+    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.2f;
+    [SerializeField] private LayerMask groundLayer;
+
+    [SerializeField]private Transform MyTransforms;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -43,6 +45,10 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        Vector3 scale = MyTransforms.localScale;
+        scale.x = moveInput.x > 0 ? 1 : moveInput.x < 0 ? -1 : scale.x;
+        MyTransforms.localScale = scale;
+
         // Horizontal movement
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
 
